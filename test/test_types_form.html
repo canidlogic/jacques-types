@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>Types testing form - Jacques-Types</title>
+    <meta name="viewport" 
+        content="width=device-width, initial-scale=1.0"/>
+  </head>
+  <body>
+    <h1>Types testing form</h1>
+    <form
+        method="post"
+        action="test_types_submit.php"
+        accept-charset="UTF-8">
+      <table>
+        <tr>
+          <td>Test value:</td>
+          <td><input id="val" name="val"/></td>
+        </tr>
+        <tr>
+          <td>Value type:</td>
+          <td>
+            <select id="vtype" name="vtype">
+              <option
+                  value="path_text"
+                  label="Path text">Path text</option>
+              <option
+                  value="res_path"
+                  label="Resource path">Resource path</option>
+              <option
+                  value="domain"
+                  label="Domain">Domain</option>
+              <option
+                  value="url"
+                  label="URL">URL</option>
+              <option
+                  value="email"
+                  label="E-mail address">E-mail address</option>
+              <option
+                  value="time_str"
+                  label="Date/time string">Date/time string</option>
+              <option
+                  value="atom"
+                  label="Atom">Atom</option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td colspan="2" style="text-align: right;">
+            <input type="submit" value="Submit"/>
+          </td>
+        </tr>
+      </table>
+    </form>
+  </body>
+</html>
