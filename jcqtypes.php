@@ -2694,4 +2694,122 @@ class JCQTypes {
     // Return result
     return $str;
   }
+  
+  /*
+   * Normalize a filename.
+   * 
+   * This function does NOT guarantee that the returned string is a
+   * valid filename.
+   * 
+   * Parameters:
+   * 
+   *   $str : string | mixed - the filename to normalize
+   * 
+   * Return:
+   * 
+   *   the normalized filename string
+   */
+  public static function normFilename($str) {
+    
+    // If non-string passed, return empty string
+    if (is_string($str) !== true) {
+      return '';
+    }
+    
+    // Just trim leading and trailing whitespace and convert to
+    // lowercase
+    return trim(strtolower($str));
+  }
+  
+  /*
+   * Validate a normalized filename.
+   * 
+   * You should normalize the filename using normFilename() before
+   * passing to this function, else non-normalized text may fail
+   * validation.
+   * 
+   * Parameters:
+   * 
+   *   $str : string | mixed - the normalized filename to validate
+   * 
+   * Return:
+   * 
+   *   true if normalized filename is valid, false if it is not
+   */
+  public static function checkFilename($str) {
+    
+    // If non-string passed, return false
+    if (is_string($str) !== true) {
+      return false;
+    }
+    
+    // Get and check length of filename
+    $slen = strlen($str);
+    if (($slen < 1) || ($slen > 31)) {
+      return false;
+    }
+    
+    // Check each character
+    for($i = 0; $i < $slen; $i++) {
+      
+      // Get current character code
+      $c = ord($str[$i]);
+      
+      // Check character range
+      if ((($c < ord('a')) || ($c > ord('z'))) &&
+          (($c < ord('0')) || ($c > ord('9'))) &&
+          ($c !== ord('_')) && ($c !== ord('.'))) {
+        return false;
+      }
+    }
+    
+    // Check if there is a dot
+    $dloc = strpos($str, '.');
+    
+    // If there is a dot, check if there is more than one dot (which is
+    // not allowed), and also check that dot is neither first nor last
+    // character
+    if ($dloc !== false) {
+      if ($dloc !== strrpos($str, '.')) {
+        return false;
+      }
+      if (($dloc < 1) || ($dloc >= $slen - 1)) {
+        return false;
+      }
+    }
+    
+    // Determine filename proper
+    $fpr = NULL;
+    if ($dloc !== false) {
+      $fpr = substr($str, 0, $dloc);
+    } else {
+      $fpr = $str;
+    }
+    
+    // If filename proper is 3 characters, check for special device name
+    if (strlen($fpr) === 3) {
+      if (($fpr === 'aux') ||
+          ($fpr === 'con') ||
+          ($fpr === 'nul') ||
+          ($fpr === 'prn')) {
+        return false;
+      }
+    }
+    
+    // If filename proper if 4 characters, check for special device name
+    if (strlen($fpr) === 4) {
+      // Only proceed with check if 4th character is digit 1-9
+      $fc = ord($fpr[3]);
+      if (($fc >= ord('1')) && ($fc <= ord('9'))) {
+        // Now look at only first three characters
+        $fpr = substr($fpr, 0, 3);
+        if (($fpr === 'com') || ($fpr === 'lpt')) {
+          return false;
+        }
+      }
+    }
+    
+    // If we got here, filename is okay
+    return true;
+  }
 }
