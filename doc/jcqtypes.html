@@ -254,6 +254,7 @@ li {
       <li>2.8 <a href="#sec2p8">Timestamp definition</a></li>
       <li>2.9 <a href="#sec2p9">Atom definition</a></li>
       <li>2.10 <a href="#sec2p10">Unicode string definition</a></li>
+      <li>2.11 <a href="#sec2p11">Filename definition</a></li>
     </ul>
   </li>
 </ul>
@@ -1209,6 +1210,65 @@ JCQTypes::<b>xmlUniString</b>(<br/>
 
 <p>The returned string will have all the appropriate escapes applied, but it will <i>not</i> include the enclosing double- or single-​quote marks.</p>
 
+<h3 id="sec2p11">2.11 Filename definition</h3>
+
+<p>A <i>filename</i> is a simple textual name format that is designed for use in portable file names.  It is based on the <a href="#extEMCA119">[ECMA-​119]</a> standard; specifically, on the “file identifier format” in §7.5.1 of that standard, using only d-characters, with a required file name, with an optional extension, but no version number.  This is similar to the file name definition in the classic <a href="#extISO9660">[ISO-​9660]</a> standard, except it allows for longer file names.</p>
+
+<p>The definition given in this section also blocks certain special device names from being used as filenames, which can cause problems on Windows (and DOS) platforms.</p>
+
+<p>Each filename is case-​insensitive.  To enforce this restriction even on case-​sensitive file systems, all filenames are required to be in lowercase only.  The normalization procedure will enforce this restriction.</p>
+
+<p>The following restrictions apply to filenames:</p>
+
+<blockquote class="iblock">
+<p>(1) Filenames may only use ASCII alphanumeric characters, the underscore, and the dot.</p>
+
+<p>(2) Only lowercase alphabet letters may be used.  Uppercase alphabet letters will be normalized to their lowercase equivalents.</p>
+
+<p>(3) The dot may be used at most once, and it may be neither the first nor the last character.</p>
+
+<p>(4) The total length of the filename may be at most 31 characters.</p>
+
+<p>(5) The filename must be at least one character.</p>
+
+<p>(6) The “filename proper” may not match any “special device name” (see below).</p>
+</blockquote>
+
+<p>The <i>filename proper</i> is the entire filename if there is no dot; otherwise, it is the filename up to but excluding the dot.  The filename proper is not allowed to match any of the special device names defined in <a href="#extWinfile">[WIN-​FILE]</a>.  These special device names (normalized to lowercase) are as follows, where the <span class="tt">#</span> character means any ASCII decimal digit 1-9:</p>
+
+<ul>
+<li><span class="tt">aux</span></li>
+<li><span class="tt">com#</span></li>
+<li><span class="tt">con</span></li>
+<li><span class="tt">lpt#</span></li>
+<li><span class="tt">nul</span></li>
+<li><span class="tt">prn</span></li>
+</ul>
+
+<p>To normalize a filename, use the following function:</p>
+
+<blockquote class="cblock">
+JCQTypes::<b>normFilename</b>(<br/>
+  $str : string | mixed<br/>
+) : string
+</blockquote>
+
+<p>If something other than a string is passed, the effect is the same as passing an empty string.  The return string is <i>not</i> guaranteed to be a valid filename.</p>
+
+<p>The only thing this function does is to trim the given string of leading and trailing whitespace and to convert all uppercase ASCII letters to lowercase.</p>
+
+<p>To validate a normalized filename, use the following function:</p>
+
+<blockquote class="cblock">
+JCQTypes::<b>checkFilename</b>(<br/>
+  $str : string | mixed<br/>
+) : boolean
+</blockquote>
+
+<p>You should normalize the filename first with <span class="tt">norm​Filename()</span> or the non-​normalized text may fail validation.</p>
+
+<p>Passing a non-string parameter always causes the function to return <span class="tt">false</span>.  The function returns a boolean value that is <span class="tt">true</span> if the filename is valid in format and <span class="tt">false</span> otherwise.  The format of a valid filename is described earlier in this section.</p>
+
 <hr/>
 
 <h2 id="secA">A. External references</h2>
@@ -1216,6 +1276,14 @@ JCQTypes::<b>xmlUniString</b>(<br/>
 <p id="extBark">[BARK] — Bark project<br/>
 Canidtech<br/>
 <a href="https://www.purl.org/canidtech/r/bark">https://www.purl.org/canidtech/r/bark</a></p>
+
+<p id="extEMCA119">[ECMA-119] — “Volume and file structure of CDROM for information interchange”<br/>
+ECMA International<br/>
+<a href="https://www.ecma-international.org/publications-and-standards/standards/ecma-119/">https://www.ecma-international.org/publications-and-standards/standards/ecma-119/</a></p>
+
+<p id="extISO9660">[ISO-9660] — “Information processing — Volume and file structure of CD-ROM for information interchange”<br/>
+ISO<br/>
+<a href="https://www.iso.org/standard/17505.html">https://www.iso.org/standard/17505.html</a></p>
 
 <p id="extRFC3339">[RFC-3339] — “Date and Time on the Internet: Timestamps”<br/>
 The Internet Society<br/>
@@ -1228,6 +1296,10 @@ The Internet Society<br/>
 <p id="extRFC3696">[RFC-3696] — “Application Techniques for Checking and Transformation of Names”<br/>
 The Internet Society<br/>
 <a href="https://tools.ietf.org/html/rfc3696">https://tools.ietf.org/html/rfc3696</a></p>
+
+<p id="extWinfile">[WIN-FILE] — “Naming Files, Paths, and Namespaces”<br/>
+Microsoft<br/>
+<a href="https://docs.microsoft.com/en-us/windows/win32/fileio/naming-a-file">https://docs.microsoft.com/en-us/windows/win32/fileio/naming-a-file</a></p>
 
 <p id="extXML">[XML] — Extensible Markup Language (XML) 1.0<br/>
 W3C<br/>
