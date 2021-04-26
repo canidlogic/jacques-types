@@ -115,6 +115,10 @@ if (is_null($result_intype) === false) {
     $vtype = 'atom';
     $result_intype = 'Atom';
   
+  } else if ($result_intype === 'filename') {
+    $vtype = 'filename';
+    $result_intype = 'Filename';
+  
   } else {
     $vtype = NULL;
     $result_intype = '?';
@@ -166,6 +170,11 @@ if ((is_null($result_inval) === false) &&
     // Atom
     $result_norm = JCQTypes::normAtom($result_inval);
     $result_valid = JCQTypes::checkAtom($result_norm);
+  
+  } else if ($vtype === 'filename') {
+    // Filename
+    $result_norm = JCQTypes::normFilename($result_inval);
+    $result_valid = JCQTypes::checkFilename($result_norm);
   }
   
   // If result was not valid, clear norm to -
